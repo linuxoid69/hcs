@@ -32,12 +32,18 @@ func IsValidName(name string) bool {
 	return true
 }
 
-// IsNameExists - check name exists or not.
-func IsNameExists(service, name string) bool {
-	vaultList, _ := keychain.GetCredentials(service, name)
+type Service struct {
+	ServiceName string
+	ServicePath string
+	ProfileName string
+}
 
-	for _, i := range strings.Split(vaultList, " ") {
-		if i == name {
+// IsNameExists - check name exists or not.
+func IsNameExists(service *Service) bool {
+	profileList, _ := keychain.GetCredentials(service.ServiceName, service.ServicePath)
+
+	for _, i := range strings.Split(profileList, " ") {
+		if i == service.ProfileName {
 			return true
 		}
 	}

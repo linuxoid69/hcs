@@ -75,9 +75,10 @@ func deleteEntryVault(name string) {
 
 func addVaultEntry() {
 	name := prompt.GetInputName(prompt.PromptContent{
-		ErrorMsg: "Name is invalid or name is already exists",
-		Label:    "Enter name for new entry:",
-		Service:  ServiceVault,
+		ErrorMsg:    "Name is invalid or name is already exists",
+		Label:       "Enter name for new entry:",
+		ServiceName: ServiceVault,
+		ServicePath: ListNames,
 	})
 
 	host := prompt.GetInputHost(prompt.PromptContent{

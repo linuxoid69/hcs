@@ -22,9 +22,10 @@ const (
 )
 
 type PromptContent struct {
-	ErrorMsg string
-	Label    string
-	Service  string
+	ErrorMsg    string
+	Label       string
+	ServiceName string
+	ServicePath string
 }
 
 func GetInputName(pc PromptContent) string {
@@ -33,7 +34,11 @@ func GetInputName(pc PromptContent) string {
 			return errors.New(pc.ErrorMsg)
 		}
 
-		if helpers.IsNameExists(pc.Service, input) == true {
+		if helpers.IsNameExists(&helpers.Service{
+			ServiceName: pc.ServiceName,
+			ServicePath: pc.ServicePath,
+			ProfileName: input,
+		}) == true {
 			return errors.New(pc.ErrorMsg)
 		}
 
