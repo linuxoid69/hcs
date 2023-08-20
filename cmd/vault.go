@@ -25,16 +25,20 @@ var vaultCmd = &cobra.Command{
 	Use:   "vault",
 	Short: "Vault environment",
 	Run: func(cmd *cobra.Command, args []string) {
-		helpers.DefaultHelp(cmd, &args)
 
 		if addVault {
-			addVaultEntry()
+			addEntry()
+			os.Exit(0)
 		} else if deleteVault {
 			helpers.DefaultHelp(cmd, &args)
-			deleteEntryVault(args[0])
+			deleteEntry(args[0])
+			os.Exit(0)
 		} else if listVault {
-			fmt.Println(getlistVault(ServiceVault, ListNames))
+			fmt.Println(getProfiles(ServiceVault, ListNames))
+			os.Exit(0)
 		}
+
+		helpers.DefaultHelp(cmd, &args)
 	},
 }
 
@@ -46,7 +50,7 @@ func init() {
 	vaultCmd.PersistentFlags().BoolVar(&deleteVault, "delete", false, "Delete Vault entry (--delete foo)")
 }
 
-func getlistVault(service, key string) string {
+func getProfiles(service, key string) string {
 	value, err := keychain.GetCredentials(service, key)
 	if err != nil {
 		fmt.Println("Can't get list Vault")
@@ -56,7 +60,7 @@ func getlistVault(service, key string) string {
 	return strings.ReplaceAll(strings.TrimLeft(value, " "), " ", "\n")
 }
 
-func deleteEntryVault(name string) {
+func deleteEntry(name string) {
 	for _, i := range []string{"token", "host"} {
 		keychain.DeleteCredentials(ServiceVault+"/"+name, i)
 	}
@@ -72,7 +76,7 @@ func deleteEntryVault(name string) {
 	)
 }
 
-func addVaultEntry() {
+func addEntry() {
 	name := prompt.GetInputName(prompt.PromptContent{
 		ErrorMsg:    "Name is invalid or name is already exists",
 		Label:       "Enter name for new entry:",
