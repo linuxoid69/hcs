@@ -30,7 +30,7 @@ type PromptContent struct {
 
 func GetInputName(pc PromptContent) string {
 	validate := func(input string) error {
-		if helpers.IsValidName(input) == false {
+		if !helpers.IsValidName(input) {
 			return errors.New(pc.ErrorMsg)
 		}
 
@@ -38,7 +38,7 @@ func GetInputName(pc PromptContent) string {
 			ServiceName: pc.ServiceName,
 			ServicePath: pc.ServicePath,
 			ProfileName: input,
-		}) == true {
+		}) {
 			return errors.New(pc.ErrorMsg)
 		}
 
@@ -101,7 +101,7 @@ func GetInputToken(pc PromptContent) string {
 
 func GetInputHost(pc PromptContent) string {
 	validate := func(input string) error {
-		if helpers.IsValidHost(input) == false {
+		if !helpers.IsValidHost(input) {
 			return errors.New(pc.ErrorMsg)
 		}
 

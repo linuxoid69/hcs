@@ -12,7 +12,7 @@ import (
 
 // IsValidHost - valid host or not.
 func IsValidHost(host string) bool {
-	matcher := regexp.MustCompile("^(http|https)://.+\\.+\\w+")
+	matcher := regexp.MustCompile(`^(http|https):\/\/.+\.+\w+`)
 
 	return matcher.Match([]byte(host))
 }
@@ -22,7 +22,7 @@ func IsValidName(name string) bool {
 	if name == "" {
 		return false
 	} else {
-		matcher := regexp.MustCompile("^.+\\s.*")
+		matcher := regexp.MustCompile(`^.+\s.*`)
 
 		if matcher.Match([]byte(name)) {
 			return false

@@ -62,18 +62,28 @@ func getProfiles(service, key string) string {
 
 func deleteEntry(name string) {
 	for _, i := range []string{"token", "host"} {
-		keychain.DeleteCredentials(ServiceVault+"/"+name, i)
+		if err := keychain.DeleteCredentials(ServiceVault+"/"+name, i); err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
 	}
 
-	profileList, _ := keychain.GetCredentials(ServiceVault, ListNames)
+	profileList, err := keychain.GetCredentials(ServiceVault, ListNames)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 
-	keychain.SetCredentials(
+	if err = keychain.SetCredentials(
 		&keychain.Secret{
 			Service: ServiceVault,
 			Key:     ListNames,
 			Value:   strings.ReplaceAll(profileList, name, ""),
 		},
-	)
+	); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }
 
 func addEntry() {
@@ -94,25 +104,38 @@ func addEntry() {
 		Label:    "Enter token:",
 	})
 
-	keychain.SetCredentials(&keychain.Secret{
+	if err := keychain.SetCredentials(&keychain.Secret{
 		Service: ServiceVault + "/" + name,
 		Key:     "token",
 		Value:   token,
-	})
+	}); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 
-	keychain.SetCredentials(&keychain.Secret{
+	if err := keychain.SetCredentials(&keychain.Secret{
 		Service: ServiceVault + "/" + name,
 		Key:     "host",
 		Value:   host,
-	})
+	}); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 
-	profileList, _ := keychain.GetCredentials(ServiceVault, ListNames)
+	profileList, err := keychain.GetCredentials(ServiceVault, ListNames)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 
-	keychain.SetCredentials(
+	if err := keychain.SetCredentials(
 		&keychain.Secret{
 			Service: ServiceVault,
 			Key:     ListNames,
 			Value:   strings.Join(append(strings.Split(profileList, " "), name), " "),
 		},
-	)
+	); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }
