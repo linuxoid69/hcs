@@ -8,6 +8,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/linuxoid69/hcs/internal/helpers"
 	"github.com/linuxoid69/hcs/internal/keychain"
 	"github.com/linuxoid69/hcs/internal/prompt"
 	"github.com/spf13/cobra"
@@ -22,16 +23,14 @@ const ListNames = "list_names"
 
 var vaultCmd = &cobra.Command{
 	Use:   "vault",
-	Short: "HCS is an environment switch",
-	Long:  `HCS is a utility for switching between different Vault environments`,
+	Short: "Vault environment",
 	Run: func(cmd *cobra.Command, args []string) {
+		helpers.DefaultHelp(cmd, &args)
+
 		if addVault {
 			addVaultEntry()
 		} else if deleteVault {
-			if len(args) == 0 {
-				fmt.Println("Enter name, please!")
-				os.Exit(1)
-			}
+			helpers.DefaultHelp(cmd, &args)
 			deleteEntryVault(args[0])
 		} else if listVault {
 			fmt.Println(getlistVault(ServiceVault, ListNames))
@@ -42,9 +41,9 @@ var vaultCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(vaultCmd)
 
-	vaultCmd.PersistentFlags().BoolVar(&listVault, "list", false, "list Vault entries")
-	vaultCmd.PersistentFlags().BoolVar(&addVault, "add", false, "print 'add' to add new Vault entry")
-	vaultCmd.PersistentFlags().BoolVar(&deleteVault, "delete", false, "delete Vault entry")
+	vaultCmd.PersistentFlags().BoolVar(&listVault, "list", false, "List Vault entries")
+	vaultCmd.PersistentFlags().BoolVar(&addVault, "add", false, "Add new Vault entry")
+	vaultCmd.PersistentFlags().BoolVar(&deleteVault, "delete", false, "Delete Vault entry (--delete foo)")
 }
 
 func getlistVault(service, key string) string {
@@ -62,13 +61,13 @@ func deleteEntryVault(name string) {
 		keychain.DeleteCredentials(ServiceVault+"/"+name, i)
 	}
 
-	vaultList, _ := keychain.GetCredentials(ServiceVault, ListNames)
+	profileList, _ := keychain.GetCredentials(ServiceVault, ListNames)
 
 	keychain.SetCredentials(
 		&keychain.Secret{
 			Service: ServiceVault,
 			Key:     ListNames,
-			Value:   strings.ReplaceAll(vaultList, name, ""),
+			Value:   strings.ReplaceAll(profileList, name, ""),
 		},
 	)
 }
@@ -103,13 +102,13 @@ func addVaultEntry() {
 		Value:   host,
 	})
 
-	vaultList, _ := keychain.GetCredentials(ServiceVault, ListNames)
+	profileList, _ := keychain.GetCredentials(ServiceVault, ListNames)
 
 	keychain.SetCredentials(
 		&keychain.Secret{
 			Service: ServiceVault,
 			Key:     ListNames,
-			Value:   vaultList + " " + name,
+			Value:   profileList + " " + name,
 		},
 	)
 }
