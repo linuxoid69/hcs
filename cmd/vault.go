@@ -53,8 +53,8 @@ func init() {
 func getProfiles(service, key string) string {
 	value, err := keychain.GetCredentials(service, key)
 	if err != nil {
-		fmt.Println("Can't get list Vault")
-		os.Exit(1)
+		fmt.Println("Profiles not exists yet")
+		os.Exit(0)
 	}
 
 	return strings.ReplaceAll(strings.TrimLeft(value, " "), " ", "\n")
@@ -112,7 +112,7 @@ func addEntry() {
 		&keychain.Secret{
 			Service: ServiceVault,
 			Key:     ListNames,
-			Value:   profileList + " " + name,
+			Value:   name + " " + profileList,
 		},
 	)
 }
