@@ -112,7 +112,7 @@ func addEntry() {
 		&keychain.Secret{
 			Service: ServiceVault,
 			Key:     ListNames,
-			Value:   name + " " + profileList,
+			Value:   strings.Join(append(strings.Split(profileList, " "), name), " "),
 		},
 	)
 }
