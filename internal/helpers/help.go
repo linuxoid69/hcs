@@ -3,6 +3,7 @@ package helpers
 import (
 	"fmt"
 	"os"
+	"slices"
 
 	"github.com/spf13/cobra"
 )
@@ -16,4 +17,10 @@ func DefaultHelp[T []string | []int](cmd *cobra.Command, args *T) {
 
 		os.Exit(0)
 	}
+}
+
+func DeleteElementFromSlice(slice []string, target string) []string {
+	return slices.DeleteFunc(slice, func(s string) bool {
+		return s == target
+	})
 }
